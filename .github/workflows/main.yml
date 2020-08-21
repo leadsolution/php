@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2.0.0
+      with:
+        token: ${{ secrets.DO_TOKEN }}
+
+    - name: Build & push
+      run: |
+        doctl registry login
+        docker build -t registry.digitalocean.com/leadsolution/php .
+        docker push registry.digitalocean.com/leadsolution/php
